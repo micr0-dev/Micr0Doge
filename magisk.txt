@@ -1,0 +1,10 @@
+**Magisk**
+Stable version should work for most. Newer versions of Android may require temporary use of Canary or Beta builds.
+
+Threads:
+Magisk XDA Thread - <https://forum.xda-developers.com/apps/magisk/official-magisk-v7-universal-systemless-t3473445>
+Magisk Canary XDA Thread - <https://forum.xda-developers.com/apps/magisk/dev-magisk-canary-channel-bleeding-edge-t3839337>
+
+Downloads:
+Magisk Stable - <<Latest_Magisk_Stable_Link>>
+Magisk Canary - <https://raw.githubusercontent.com/topjohnwu/magisk_files/canary/app-debug.apk>

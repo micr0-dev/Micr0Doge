@@ -1,0 +1,11 @@
+Android SDK Platform Tools (adb & fastboot)
+<https://developer.android.com/studio/releases/platform-tools>
+
+Google Factory Images for Nexus/Pixel Devices (For faster access use `!images`. To learn more use `!help images`)
+<https://developers.google.com/android/images#>
+
+Google Full OTA Images for Nexus/Pixel Devices
+<https://developers.google.com/android/ota#>
+
+Google USB Drivers
+<https://developer.android.com/studio/run/win-usb>

@@ -1,0 +1,6 @@
+Prefix:`!`
+`help [Search Term]` - Shows this list, OR Searches this list.
+`images {Pixel Device} [Extension]` - Gives a link to the factory images of the Pixel device. Alias: `img` Extensions: `-r` (Release) `-l` (Latest, also Deafult)
+`magisk` - Shows usful links and information on Magisk. Alias: `m`
+`tools` - Shows usful links and information on diffrent root related tools. Alias: `t`
+`blod` - Shows links to files which may temporarily fix the BLOD.
