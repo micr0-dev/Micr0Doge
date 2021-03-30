@@ -27,7 +27,7 @@ async def on_ready():
 █████████████████████████████████████████████▀███████
 █▄─▀█▀─▄█▄─▄█─▄▄▄─█▄─▄▄▀█─▄▄─█▄─▄▄▀█─▄▄─█─▄▄▄▄█▄─▄▄─█
 ██─█▄█─███─██─███▀██─▄─▄█─██─██─██─█─██─█─██▄─██─▄█▀█
-▀▄▄▄▀▄▄▄▀▄▄▄▀▄▄▄▄▄▀▄▄▀▄▄▀▄▄▄▄▀▄▄▄▄▀▀▄▄▄▄▀▄▄▄▄▄▀▄▄▄▄▄▀ By Micr0byte, For Squabbi (Version 0.2)\n""")
+▀▄▄▄▀▄▄▄▀▄▄▄▀▄▄▄▄▄▀▄▄▀▄▄▀▄▄▄▄▀▄▄▄▄▀▀▄▄▄▄▀▄▄▄▄▄▀▄▄▄▄▄▀ By Micr0byte, For Squabbi (Version 0.3)\n""")
     print(str(client.user)+' is connected to the following guild:\n'+str(guild.name)+' (id: '+str(guild.id)+')')
 
 @client.event
@@ -35,66 +35,90 @@ async def on_message(message):
     if message.author == client.user:
         return
     while True:
+        if len(message.content) <= 0:
+            break
         if message.content[0] == "!":
-            version = "l"
+            version = ""
             codeName = None
             zipLinksList = []
             listMessage = message.content[1:].split()
             if listMessage[0] == "help":
                 helpFile = open(str(os.path.realpath(__file__))[:-6]+"help.txt", "r")
-                if len(listMessage) > 1:
-                    await message.channel.send('\n'.join([s for s in helpFile.read().split("\n") if ' '.join(listMessage[1:]) in s]))
-                await message.channel.send(helpFile.read())
+                helpText = helpFile.read()
                 helpFile.close()
-            elif listMessage[0] == "image" or listMessage[0] == "img":
-                extensions = [s for s in listMessage if "-" in s]
-                if len(extensions) != 0:
-                    listMessage.remove(extensions[0])
-                    if extensions[0][1] == "r":
-                        version = "r"
-                    elif extensions[0][1] == "l":
-                        version = "l"
-                    else:
-                        await message.channel.send("Invalid Extension")
-                        break
-                #Getting the website with a Completed TOS cookie
-                r = requests.get('https://developers.google.com/android/images', cookies=dict(devsite_wall_acks="nexus-image-tos"))
-                #Parsing the HTML
-                soup = BeautifulSoup(r.text, 'html.parser')
-                device = " ".join(listMessage[1:]).lower()
-                if device in codeNameDict:
-                    codeName = codeNameDict[device]
-                elif device in codeNameDict.values():
-                    codeName = device
-                else:
-                    await message.channel.send("Invalid Device / Not Supported Device")
+                if len(listMessage) > 1:
+                    await message.channel.send('\n'.join([s for s in helpText.split("\n") if ' '.join(listMessage[1:]) in s]))
                     break
-                for link in soup.find_all('a'):
-                    zipLink = link.get('href')
-                    if codeName in zipLink and "dl.google.com" in zipLink:
-                        zipLinksList.append(zipLink)
+                await message.channel.send(helpText)
+                
+            elif listMessage[0] == "image" or listMessage[0] == "img":
+                async with message.channel.typing():
+                    extensions = [s for s in listMessage if "-" in s]
+                    if len(extensions) != 0:
+                        listMessage.remove(extensions[0])
+                        if extensions[0][1] == "r":
+                            version = "r"
+                        elif extensions[0][1] == "l":
+                            version = "l"
+                        else:
+                            await message.channel.send("Invalid Extension")
+                            break
+                    #Getting the website with a Completed TOS cookie
+                    r = requests.get('https://developers.google.com/android/images', cookies=dict(devsite_wall_acks="nexus-image-tos"))
+                    #Parsing the HTML
+                    soup = BeautifulSoup(r.text, 'html.parser')
+                    device = " ".join(listMessage[1:]).lower()
+                    if device in codeNameDict:
+                        codeName = codeNameDict[device]
+                    elif device in codeNameDict.values():
+                        codeName = device
+                    else:
+                        await message.channel.send("Invalid Device / Not Supported Device")
+                        break
+                    for link in soup.find_all('a'):
+                        zipLink = link.get('href')
+                        if codeName in zipLink and "dl.google.com" in zipLink:
+                            zipLinksList.append(zipLink)
                 if version == "l":
-                    await message.channel.send(zipLinksList[-1])
+                    imgLink = "<https://developers.google.com/android/images#"+codeName+">"
                 elif version == "r":
-                    await message.channel.send(zipLinksList[0])
+                    imgLink = zipLinksList[0]
+                else:
+                    imgLink = zipLinksList[-1]
+                await message.channel.send('''```diff
+- WARNING: Please use these Images only for '''+codeName+" ("+list(codeNameDict.keys())[list(codeNameDict.values()).index(codeName)].title()+"). If not it may result in a hard brick of the device -```"+'\n'+imgLink)
             elif listMessage[0] == "magisk" or listMessage[0] == "m":
-                r = requests.get('https://github.com/topjohnwu/Magisk/releases/tag/v22.0')
-                soup = BeautifulSoup(r.text, 'html.parser')
-                for link in soup.find_all('a'):
-                    zipLink = link.get('href')
-                    if "/topjohnwu/Magisk/releases/download" in zipLink:
-                        zipLinksList.append(zipLink)
-                magiskFile = open(str(os.path.realpath(__file__))[:-6]+"magisk.txt", "r")
-                await message.channel.send(magiskFile.read().replace("<Latest_Magisk_Stable_Link>","https://github.com"+zipLinksList[0]))
-                magiskFile.close()
+                async with message.channel.typing():
+                    r = requests.get('https://github.com/topjohnwu/Magisk/releases/tag/v22.0')
+                    soup = BeautifulSoup(r.text, 'html.parser')
+                    for link in soup.find_all('a'):
+                        zipLink = link.get('href')
+                        if "/topjohnwu/Magisk/releases/download" in zipLink:
+                            zipLinksList.append(zipLink)
+                    magiskFile = open(str(os.path.realpath(__file__))[:-6]+"magisk.txt", "r")
+                    magiskText = magiskFile.read()
+                    magiskFile.close()
+                    await message.channel.send(magiskText.replace("<Latest_Magisk_Stable_Link>","https://github.com"+zipLinksList[0]))
             elif listMessage[0] == "tools" or listMessage[0] == "t":
                 toolsFile = open(str(os.path.realpath(__file__))[:-6]+"tools.txt", "r")
-                await message.channel.send(toolsFile.read())
+                toolsText = toolsFile.read()
                 toolsFile.close()
+                await message.channel.send(toolsText)
             elif listMessage[0] == "blod":
                 blodFile = open(str(os.path.realpath(__file__))[:-6]+"blod.txt", "r")
-                await message.channel.send(blodFile.read())
+                blodText = blodFile.read()
                 blodFile.close()
+                await message.channel.send(blodText)
+            elif listMessage[0] == "safetynet" or listMessage[0] == "sn":
+                safetynetFile = open(str(os.path.realpath(__file__))[:-6]+"safetynet.txt", "r")
+                safetynetText = safetynetFile.read()
+                safetynetFile.close()
+                await message.channel.send(safetynetText)
+            elif listMessage[0] == "bootloader" or listMessage[0] == "bl":
+                bootloaderFile = open(str(os.path.realpath(__file__))[:-6]+"bootloader.txt", "r")
+                bootloaderText = bootloaderFile.read()
+                bootloaderFile.close()
+                await message.channel.send(bootloaderText)
             else:
                 await message.channel.send("Invalid command. Use `!help` for list of commands.")
         break
