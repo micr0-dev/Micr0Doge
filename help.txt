@@ -6,3 +6,6 @@
 `blod` - Shows links to files which may temporarily fix the BLOD.
 `safetynet` - Shows info about Safetynet and link on how to fix it. Alias: `sn`
 `bootloader` - Shows info about the bootloader and how to unlock it. Alias: `bl`
+`crew` - Shows info about Squabbi and Micr0byte.
+`squabbi` - Shows info about Squabbi.
+`micr0byte` - Shows info about Micr0byte. Aliases: `micr0`, `micro`, `microbyte`

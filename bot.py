@@ -1,6 +1,10 @@
 #Importing
+import data
+
 import discord
 from dotenv import load_dotenv
+
+from datetime import datetime
 
 import os
 
@@ -15,10 +19,13 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = 825833645457276989
 
+guild = None
+
 client = discord.Client()
 
 @client.event
 async def on_ready():
+    global guild
     for guild in client.guilds:
         if guild.id == GUILD:
             break
@@ -27,7 +34,7 @@ async def on_ready():
 █████████████████████████████████████████████▀███████
 █▄─▀█▀─▄█▄─▄█─▄▄▄─█▄─▄▄▀█─▄▄─█▄─▄▄▀█─▄▄─█─▄▄▄▄█▄─▄▄─█
 ██─█▄█─███─██─███▀██─▄─▄█─██─██─██─█─██─█─██▄─██─▄█▀█
-▀▄▄▄▀▄▄▄▀▄▄▄▀▄▄▄▄▄▀▄▄▀▄▄▀▄▄▄▄▀▄▄▄▄▀▀▄▄▄▄▀▄▄▄▄▄▀▄▄▄▄▄▀ By Micr0byte, For Squabbi (Version 0.3)\n""")
+▀▄▄▄▀▄▄▄▀▄▄▄▀▄▄▄▄▄▀▄▄▀▄▄▀▄▄▄▄▀▄▄▄▄▀▀▄▄▄▄▀▄▄▄▄▄▀▄▄▄▄▄▀ By Micr0byte, For Squabbi (Version 0.4)\n""")
     print(str(client.user)+' is connected to the following guild:\n'+str(guild.name)+' (id: '+str(guild.id)+')')
 
 @client.event
@@ -41,7 +48,15 @@ async def on_message(message):
             version = ""
             codeName = None
             zipLinksList = []
-            listMessage = message.content[1:].split()
+            listMessage = message.content.lower()[1:].split()
+            embedVar = discord.Embed(title="Title", description="Desc", color=0x00ff00)
+
+            logmsg = "["+str(datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))+"] "+str(message.author.name)+": "+str(message.content)+"\n"
+            print(logmsg, end='')
+            logfile = open(str(os.path.realpath(__file__))[:-6]+"Log.txt", "a")
+            logfile.write(logmsg)
+            logfile.close()
+
             if listMessage[0] == "help":
                 helpFile = open(str(os.path.realpath(__file__))[:-6]+"help.txt", "r")
                 helpText = helpFile.read()
@@ -50,7 +65,6 @@ async def on_message(message):
                     await message.channel.send('\n'.join([s for s in helpText.split("\n") if ' '.join(listMessage[1:]) in s]))
                     break
                 await message.channel.send(helpText)
-                
             elif listMessage[0] == "image" or listMessage[0] == "img":
                 async with message.channel.typing():
                     extensions = [s for s in listMessage if "-" in s]
@@ -89,36 +103,30 @@ async def on_message(message):
 - WARNING: Please use these Images only for '''+codeName+" ("+list(codeNameDict.keys())[list(codeNameDict.values()).index(codeName)].title()+"). If not it may result in a hard brick of the device -```"+'\n'+imgLink)
             elif listMessage[0] == "magisk" or listMessage[0] == "m":
                 async with message.channel.typing():
-                    r = requests.get('https://github.com/topjohnwu/Magisk/releases/tag/v22.0')
-                    soup = BeautifulSoup(r.text, 'html.parser')
-                    for link in soup.find_all('a'):
-                        zipLink = link.get('href')
-                        if "/topjohnwu/Magisk/releases/download" in zipLink:
-                            zipLinksList.append(zipLink)
-                    magiskFile = open(str(os.path.realpath(__file__))[:-6]+"magisk.txt", "r")
-                    magiskText = magiskFile.read()
-                    magiskFile.close()
-                    await message.channel.send(magiskText.replace("<Latest_Magisk_Stable_Link>","https://github.com"+zipLinksList[0]))
+                    embedVar = data.magisk()
+                await message.channel.send(embed=embedVar)
             elif listMessage[0] == "tools" or listMessage[0] == "t":
-                toolsFile = open(str(os.path.realpath(__file__))[:-6]+"tools.txt", "r")
-                toolsText = toolsFile.read()
-                toolsFile.close()
-                await message.channel.send(toolsText)
+                await message.channel.send(embed=data.tools())
             elif listMessage[0] == "blod":
-                blodFile = open(str(os.path.realpath(__file__))[:-6]+"blod.txt", "r")
-                blodText = blodFile.read()
-                blodFile.close()
-                await message.channel.send(blodText)
+                await message.channel.send(embed=data.blod())
             elif listMessage[0] == "safetynet" or listMessage[0] == "sn":
-                safetynetFile = open(str(os.path.realpath(__file__))[:-6]+"safetynet.txt", "r")
-                safetynetText = safetynetFile.read()
-                safetynetFile.close()
-                await message.channel.send(safetynetText)
+                await message.channel.send(embed=data.safetynet())
             elif listMessage[0] == "bootloader" or listMessage[0] == "bl":
-                bootloaderFile = open(str(os.path.realpath(__file__))[:-6]+"bootloader.txt", "r")
-                bootloaderText = bootloaderFile.read()
-                bootloaderFile.close()
-                await message.channel.send(bootloaderText)
+                await message.channel.send(embed=data.bootloader())
+            elif listMessage[0] == "squabbi":
+                await message.channel.send(embed=data.squabbi())
+            elif listMessage[0] == "microbyte" or listMessage[0] == "micro" or listMessage[0] == "micr0" or listMessage[0] == "micr0byte":
+                await message.channel.send(embed=data.microbyte())
+            elif listMessage[0] == "crew":
+                await message.channel.send(embed=data.squabbi())
+                await message.channel.send(embed=data.microbyte())
+            elif listMessage[0] == "cake":
+                await message.delete()
+                await message.author.create_dm()
+                await message.author.dm_channel.send("The Cake is a Lie.", delete_after=0.1)
+            elif listMessage[0] == "test":
+                #print(message.author.joined_at.timestamp())
+                pass
             else:
                 await message.channel.send("Invalid command. Use `!help` for list of commands.")
         break
