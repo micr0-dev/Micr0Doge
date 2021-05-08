@@ -107,3 +107,4 @@
 [05/08/2021, 14:18:33] Micr0byte: !alias -rm doge
 [05/08/2021, 14:18:58] Micr0byte: !alias -e doge
 [05/08/2021, 14:19:53] Micr0byte: !doge
+[05/08/2021, 14:37:17] Micr0byte: !help

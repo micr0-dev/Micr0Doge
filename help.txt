@@ -9,3 +9,4 @@
 `crew` - Shows info about Squabbi and Micr0byte.
 `squabbi` - Shows info about Squabbi.
 `micr0byte` - Shows info about Micr0byte. Aliases: `micr0`, `micro`, `microbyte`
+`alias {name} [value]` - allows you to creat aliases. If no value is entered it will be request in seperate message. Markdown and newlines supported. Extensions: `-e` (Embed, can't be used with QuickCreate, will ask for color code and output the alias in a embed format), `-rm` (Remove), `-u` (Update) `-l` (List),
