@@ -4,6 +4,8 @@ import data
 import discord
 from dotenv import load_dotenv
 
+import pickle
+
 from datetime import datetime
 
 import os
@@ -14,10 +16,20 @@ import requests
 #Codename Dictionary for conversion
 codeNameDict = {"pixel 5":"redfin","pixel 4a 5g":"bramble","pixel 4a":"sunfish","pixel 4":"flame","pixel 4 xl":"coral","pixel 3a":"sargo","pixel 3a xl":"bonito","pixel 3":"blueline","pixel 3 xl":"crosshatch","pixel 2":"walleye","pixel 2 xl":"taimen","pixel":"sailfish","pixel xl":"marlin","pixel c":"ryu","nexus 6p":"angler","nexus 5x":"bullhead","nexus 6":"shamu","nexus player":"fugu","nexus 9 lte":"volantisg","nexus 9 wifi":"volantis","nexus 5":"hammerhead","nexus 7":"razor","nexus 10":"mantary","nexus 4":"occam"}
 
+#Alias Dictionaries
+try:
+    with open(str(os.path.realpath(__file__))[:-6]+'alias.pkl', 'rb') as f:
+        aliasTitleDict, aliasEmbedDict, aliasColorDict = pickle.load(f)
+except ValueError:
+    aliasTitleDict = {}
+    aliasEmbedDict = {}
+    aliasColorDict = {}
+
 #Constants
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = 825833645457276989
+HELPER_ID = 840360457612034058
 
 guild = None
 
@@ -34,13 +46,15 @@ async def on_ready():
 █████████████████████████████████████████████▀███████
 █▄─▀█▀─▄█▄─▄█─▄▄▄─█▄─▄▄▀█─▄▄─█▄─▄▄▀█─▄▄─█─▄▄▄▄█▄─▄▄─█
 ██─█▄█─███─██─███▀██─▄─▄█─██─██─██─█─██─█─██▄─██─▄█▀█
-▀▄▄▄▀▄▄▄▀▄▄▄▀▄▄▄▄▄▀▄▄▀▄▄▀▄▄▄▄▀▄▄▄▄▀▀▄▄▄▄▀▄▄▄▄▄▀▄▄▄▄▄▀ By Micr0byte, For Squabbi (Version 0.4)\n""")
+▀▄▄▄▀▄▄▄▀▄▄▄▀▄▄▄▄▄▀▄▄▀▄▄▀▄▄▄▄▀▄▄▄▄▀▀▄▄▄▄▀▄▄▄▄▄▀▄▄▄▄▄▀ By Micr0byte, For Squabbi (Version 0.5)\n""")
     print(str(client.user)+' is connected to the following guild:\n'+str(guild.name)+' (id: '+str(guild.id)+')')
 
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
+    if message.channel.id == 836624559838330890:
+        await message.add_reaction("😢")
     while True:
         if len(message.content) <= 0:
             break
@@ -124,9 +138,93 @@ async def on_message(message):
                 await message.delete()
                 await message.author.create_dm()
                 await message.author.dm_channel.send("The Cake is a Lie.", delete_after=0.1)
+            elif listMessage[0] == "alias":
+                helper = False
+                for userRole in message.author.roles:
+                    if userRole.id == HELPER_ID:
+                        helper = True
+                if helper == False:
+                    await message.channel.send("Insufficient Permissions.")
+                    break
+                if '-e' in listMessage:
+                    listMessage.remove('-e')
+                    embed = True
+                else: 
+                    embed = False
+                if '-u' in listMessage:
+                    listMessage.remove('-u')
+                    update = True
+                else: 
+                    update = False
+                if '-rm' in listMessage:
+                    listMessage.remove('-rm')
+                    if listMessage[1] in aliasTitleDict: 
+                        if listMessage[1] in aliasColorDict:
+                            del aliasColorDict[listMessage[1]]
+                        del aliasTitleDict[listMessage[1]]
+                        del aliasEmbedDict[listMessage[1]]
+                        await message.channel.send("Removed alias "+listMessage[1])
+                        with open(str(os.path.realpath(__file__))[:-6]+'alias.pkl', 'wb') as fi:
+                            pickle.dump([aliasTitleDict,aliasEmbedDict, aliasColorDict], fi)
+                    break
+                if '-l' in listMessage:
+                    await message.channel.send(', '.join(list(aliasTitleDict.keys())))
+                    break
+                    
+
+                if listMessage[1] in aliasTitleDict and update == False:
+                    await message.channel.send("An alias for \""+listMessage[1]+"\" already exists: [value of \'"+aliasTitleDict[title]+"\'].")
+                    break
+                if len(listMessage) >= 3:
+                    #Basic alias that can be added in one line
+                    if embed == True:
+                        await message.channel.send("Cannot QuickCreat and embed, Please use Interactive Mode.")
+                    title = listMessage[1]
+                    body = ' '.join(message.content[1:].split()[2:])
+                    aliasTitleDict[title] = body
+                    aliasEmbedDict[title] = False
+                    with open(str(os.path.realpath(__file__))[:-6]+'alias.pkl', 'wb') as fi:
+                        pickle.dump([aliasTitleDict,aliasEmbedDict, aliasColorDict], fi)
+                    if listMessage[1] in aliasTitleDict and update == True:
+                        await message.channel.send("Alias \'"+title+"\' updated.")
+                    else:
+                        await message.channel.send("Alias \'"+title+"\' created.")
+                elif len(listMessage) == 2:
+                    #Interactive mode if no [value] is given
+                    title = listMessage[1]
+                    await message.channel.send("Please enter the contents of the message:")
+                    try:
+                        messagebody = await client.wait_for('message', timeout=60.0)
+                    except:
+                        await message.channel.send("Timed Out, Please try again.")
+                        break
+                    if embed:
+                        await message.channel.send("Please enter the color of the embed (Hexcode: #cf3cf3):")
+                        try:
+                            message = await client.wait_for('message', timeout=60.0)
+                        except:
+                            await message.channel.send("Timed Out, Please try again.")
+                            break
+                    aliasTitleDict[title] = messagebody.content
+                    aliasEmbedDict[title] = embed
+                    if embed:
+                        aliasColorDict[title] = message.content.replace('#', '').replace('0x', '').lower()
+                    with open(str(os.path.realpath(__file__))[:-6]+'alias.pkl', 'wb') as fi:
+                        pickle.dump([aliasTitleDict,aliasEmbedDict, aliasColorDict], fi)
+                    await message.channel.send("Alias \'"+title+"\' created.")
+                else:
+                    await message.channel.send("Invalid syntax. Use `!help alias` for help.")
             elif listMessage[0] == "test":
                 #print(message.author.joined_at.timestamp())
                 pass
+            elif listMessage[0] == "debug" and message.author.id == 531311619548905472:
+                await message.channel.send(eval(message.content[7:]))
+            elif listMessage[0] in aliasTitleDict:
+                if aliasEmbedDict[listMessage[0]] == False:
+                    messagestr = "**"+listMessage[0].title()+"**\n"+aliasTitleDict[listMessage[0]]
+                    await message.channel.send(messagestr)
+                else:
+                    await message.channel.send(embed=discord.Embed(title=listMessage[0].title(), description=aliasTitleDict[listMessage[0]], color=eval("0x"+aliasColorDict[listMessage[0]])))
             else:
                 await message.channel.send("Invalid command. Use `!help` for list of commands.")
         break
