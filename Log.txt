@@ -108,3 +108,39 @@
 [05/08/2021, 14:18:58] Micr0byte: !alias -e doge
 [05/08/2021, 14:19:53] Micr0byte: !doge
 [05/08/2021, 14:37:17] Micr0byte: !help
+[05/08/2021, 18:55:22] Micr0byte: !debug 1+1
+[05/11/2021, 18:28:07] Micr0byte: !help
+[05/11/2021, 18:30:17] Micr0byte: !magisk
+[05/11/2021, 18:30:28] Micr0byte: !image Nexus 6p
+[05/11/2021, 18:30:48] Micr0byte: !sn
+[05/11/2021, 18:31:07] Xero: !image bullhead
+[05/11/2021, 18:31:35] Micr0byte: !image Pixel 5
+[05/11/2021, 18:31:49] Xero: !image pixel 2 xl
+[05/11/2021, 18:32:33] Xero: !squabbi
+[05/11/2021, 18:32:44] Xero: !micr0byte
+[05/11/2021, 18:33:11] Micr0byte: !alias Xero -e
+[05/11/2021, 18:33:52] Xero: !xero
+[05/11/2021, 18:34:33] Micr0byte: !alias -l
+[05/11/2021, 18:34:41] Micr0byte: !alais -rm xero
+[05/11/2021, 18:34:47] Micr0byte: !alias -rm xero
+[05/11/2021, 18:34:49] Xero: !:0
+[05/11/2021, 18:34:51] Micr0byte: !doge
+[05/11/2021, 18:35:16] Micr0byte: !alias :0 O_O
+[05/11/2021, 18:35:22] Micr0byte: !:0
+[05/11/2021, 18:37:08] Micr0byte: !bootloader
+[05/11/2021, 19:01:44] Micr0byte: !:0
+[05/11/2021, 19:02:09] Xero: !:0
+[05/11/2021, 19:03:27] Micr0byte: !alias -rm :0
+[05/11/2021, 19:03:54] Micr0byte: !alias OhNo
+[05/11/2021, 19:04:09] Micr0byte: !ohno
+[05/11/2021, 19:54:15] Xero: !help
+[05/11/2021, 19:54:52] Xero: !crew
+[05/26/2021, 20:15:17] Micr0byte: !drivers
+[05/26/2021, 20:16:13] Micr0byte: !drivers
+[05/26/2021, 20:16:19] Micr0byte: !drivers
+[05/26/2021, 20:24:45] Micr0byte: !alias Xero
+[05/26/2021, 20:25:03] Xero: !alias Xero
+[05/26/2021, 20:26:06] Micr0byte: !alias Xero
+[05/26/2021, 20:26:39] Micr0byte: !alias zero
+[05/26/2021, 20:27:42] Micr0byte: !zero
+[05/26/2021, 21:07:19] Xero: !help

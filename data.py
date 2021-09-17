@@ -50,6 +50,19 @@ def tools():
     embedVar.add_field(name="Google USB Drivers", value="https://developer.android.com/studio/run/win-usb", inline=False)
     return embedVar
 
+def drivers():
+    embedVar = discord.Embed(title="Drivers", description="How to install drivers for the device based on the operating system.", color=0x3ddc84)
+    embedVar.add_field(name="Windows", value="""Open device manager
+Find Unknown "Android" device (likely listed under Other devices with an exclamation mark)
+Update driver
+Browse my computer for driver software
+Let me pick from a list of devices, select List All Devices
+Under "Android device" or "Google Inc", you will find "Android Bootloader Interface"
+Choose "Android Bootloader Interface"
+Click "yes" when it says that driver might not be compatible""", inline=False)
+    embedVar.add_field(name="Linux/Mac", value="For Linux and Mac it should already be preinstalled and working. No need for anything :)", inline=False)
+    return embedVar
+
 def squabbi():
     embedVar = discord.Embed(title="Squabbi", description="Squabbi is the creator of MaowDroid. He is the owner of the server. He lives in Australia so his timezone is different from most users here. He loves technology, mostly consumer desktop and laptops, mobile technology in the phone department; and now recently mechanical keyboards.", color=0xbceaee)
     embedVar.add_field(name="Website", value="https://www.squabbi.com/", inline=False)

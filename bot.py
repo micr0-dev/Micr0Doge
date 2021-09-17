@@ -46,7 +46,7 @@ async def on_ready():
 █████████████████████████████████████████████▀███████
 █▄─▀█▀─▄█▄─▄█─▄▄▄─█▄─▄▄▀█─▄▄─█▄─▄▄▀█─▄▄─█─▄▄▄▄█▄─▄▄─█
 ██─█▄█─███─██─███▀██─▄─▄█─██─██─██─█─██─█─██▄─██─▄█▀█
-▀▄▄▄▀▄▄▄▀▄▄▄▀▄▄▄▄▄▀▄▄▀▄▄▀▄▄▄▄▀▄▄▄▄▀▀▄▄▄▄▀▄▄▄▄▄▀▄▄▄▄▄▀ By Micr0byte, For Squabbi (Version 0.5.1)\n""")
+▀▄▄▄▀▄▄▄▀▄▄▄▀▄▄▄▄▄▀▄▄▀▄▄▀▄▄▄▄▀▄▄▄▄▀▀▄▄▄▄▀▄▄▄▄▄▀▄▄▄▄▄▀ By Micr0byte, For Squabbi (Version 0.5.2)\n""")
     print(str(client.user)+' is connected to the following guild:\n'+str(guild.name)+' (id: '+str(guild.id)+')')
 
 @client.event
@@ -127,6 +127,8 @@ async def on_message(message):
                 await message.channel.send(embed=data.safetynet())
             elif listMessage[0] == "bootloader" or listMessage[0] == "bl":
                 await message.channel.send(embed=data.bootloader())
+            elif listMessage[0] == "drivers":
+                await message.channel.send(embed=data.drivers())
             elif listMessage[0] == "squabbi":
                 await message.channel.send(embed=data.squabbi())
             elif listMessage[0] == "microbyte" or listMessage[0] == "micro" or listMessage[0] == "micr0" or listMessage[0] == "micr0byte":
@@ -173,12 +175,12 @@ async def on_message(message):
                     
 
                 if listMessage[1] in aliasTitleDict and update == False:
-                    await message.channel.send("An alias for \""+listMessage[1]+"\" already exists: [value of \'"+aliasTitleDict[title]+"\'].")
+                    await message.channel.send("An alias for \""+listMessage[1]+"\" already exists: [value of \'"+aliasTitleDict[listMessage[1]]+"\'].")
                     break
                 if len(listMessage) >= 3:
                     #Basic alias that can be added in one line
                     if embed == True:
-                        await message.channel.send("Cannot QuickCreat and embed, Please use Interactive Mode.")
+                        await message.channel.send("Cannot QuickCreate and embed, Please use Interactive Mode.")
                     title = listMessage[1]
                     body = ' '.join(message.content[1:].split()[2:])
                     aliasTitleDict[title] = body
@@ -194,21 +196,27 @@ async def on_message(message):
                     title = listMessage[1]
                     await message.channel.send("Please enter the contents of the message:")
                     try:
-                        messagebody = await client.wait_for('message', timeout=60.0)
+                        done = False
+                        while not done:
+                            messagebody = await client.wait_for('message', timeout=60.0)
+                            done = messagebody.author == message.author
                     except:
                         await message.channel.send("Timed Out, Please try again.")
                         break
                     if embed:
                         await message.channel.send("Please enter the color of the embed (Hexcode: #cf3cf3):")
                         try:
-                            message = await client.wait_for('message', timeout=60.0)
+                            done = False
+                            while not done:
+                                messagehex = await client.wait_for('message', timeout=60.0)
+                                done = messagehex.author == message.author
                         except:
                             await message.channel.send("Timed Out, Please try again.")
                             break
                     aliasTitleDict[title] = messagebody.content
                     aliasEmbedDict[title] = embed
                     if embed:
-                        aliasColorDict[title] = message.content.replace('#', '').replace('0x', '').lower()
+                        aliasColorDict[title] = messagehex.content.replace('#', '').replace('0x', '').lower()
                     with open(str(os.path.realpath(__file__))[:-6]+'alias.pkl', 'wb') as fi:
                         pickle.dump([aliasTitleDict,aliasEmbedDict, aliasColorDict], fi)
                     await message.channel.send("Alias \'"+title+"\' created.")
