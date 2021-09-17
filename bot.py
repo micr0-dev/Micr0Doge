@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 import requests
 
 #Codename Dictionary for conversion
-codeNameDict = {"pixel 5":"redfin","pixel 4a 5g":"bramble","pixel 4a":"sunfish","pixel 4":"flame","pixel 4 xl":"coral","pixel 3a":"sargo","pixel 3a xl":"bonito","pixel 3":"blueline","pixel 3 xl":"crosshatch","pixel 2":"walleye","pixel 2 xl":"taimen","pixel":"sailfish","pixel xl":"marlin","pixel c":"ryu","nexus 6p":"angler","nexus 5x":"bullhead","nexus 6":"shamu","nexus player":"fugu","nexus 9 lte":"volantisg","nexus 9 wifi":"volantis","nexus 5":"hammerhead","nexus 7":"razor","nexus 10":"mantary","nexus 4":"occam"}
+codeNameDict = {"pixel 5a":"barbet","pixel 5":"redfin","pixel 4a 5g":"bramble","pixel 4a":"sunfish","pixel 4":"flame","pixel 4 xl":"coral","pixel 3a":"sargo","pixel 3a xl":"bonito","pixel 3":"blueline","pixel 3 xl":"crosshatch","pixel 2":"walleye","pixel 2 xl":"taimen","pixel":"sailfish","pixel xl":"marlin","pixel c":"ryu","nexus 6p":"angler","nexus 5x":"bullhead","nexus 6":"shamu","nexus player":"fugu","nexus 9 lte":"volantisg","nexus 9 wifi":"volantis","nexus 5":"hammerhead","nexus 7":"razor","nexus 10":"mantary","nexus 4":"occam"}
 
 #Alias Dictionaries
 try:
@@ -48,6 +48,17 @@ async def on_ready():
 ██─█▄█─███─██─███▀██─▄─▄█─██─██─██─█─██─█─██▄─██─▄█▀█
 ▀▄▄▄▀▄▄▄▀▄▄▄▀▄▄▄▄▄▀▄▄▀▄▄▀▄▄▄▄▀▄▄▄▄▀▀▄▄▄▄▀▄▄▄▄▄▀▄▄▄▄▄▀ By Micr0byte, For Squabbi (Version 0.5.2)\n""")
     print(str(client.user)+' is connected to the following guild:\n'+str(guild.name)+' (id: '+str(guild.id)+')')
+
+def tableDataText(table):       
+    rows = []
+    trs = table.find_all('tr')
+    headerow = [td.get_text(strip=True) for td in trs[0].find_all('th')] # header row
+    if headerow: # if there is a header row include first
+        rows.append(headerow)
+        trs = trs[1:]
+    for tr in trs: # for every table row
+        rows.append([td.get_text(strip=True) for td in tr.find_all('td')]) # data row
+    return rows
 
 @client.event
 async def on_message(message):
@@ -107,14 +118,17 @@ async def on_message(message):
                         zipLink = link.get('href')
                         if codeName in zipLink and "dl.google.com" in zipLink:
                             zipLinksList.append(zipLink)
+                tablelist = soup.find_all('table')
                 if version == "l":
                     imgLink = "<https://developers.google.com/android/images#"+codeName+">"
                 elif version == "r":
                     imgLink = zipLinksList[0]
+                    tableImageData = tableDataText(tablelist[0])
                 else:
                     imgLink = zipLinksList[-1]
+                    tableImageData = tableDataText(tablelist[-1])
                 await message.channel.send('''```diff
-- WARNING: Please use these Images only for '''+codeName+" ("+list(codeNameDict.keys())[list(codeNameDict.values()).index(codeName)].title()+"). If not it may result in a hard brick of the device -```"+'\n'+imgLink)
+- WARNING: Please use these Images only for '''+codeName+" ("+list(codeNameDict.keys())[list(codeNameDict.values()).index(codeName)].title()+"). If not it may result in a hard brick of the device -```"+'\n'+"Version: `"+str(tableImageData[0])+"` "+"SHA-256 Checksum: `"+str(tableImageData[-1])+"`"+imgLink)
             elif listMessage[0] == "magisk" or listMessage[0] == "m":
                 async with message.channel.typing():
                     embedVar = data.magisk()
