@@ -70,7 +70,7 @@ def squabbi():
     return embedVar
 
 def microbyte():
-    embedVar = discord.Embed(title="Micr0byte", description="Micr0byte is the creator of Micr0Doge! He is a helper of the server and got into rooting in 2020. He enjoys coding and technology. He uses Linux but is also knowledgeable in other Operating Systems, like Windows and Mac. He still attends school so he is busy at times.", color=0xe06666)
+    embedVar = discord.Embed(title="Micr0byte", description="Micr0byte is the creator of Micr0Doge! He is a helper and Mod of the server and got into rooting in 2020. He enjoys coding and technology. He uses Linux but is also knowledgeable in other Operating Systems, like Windows and Mac. He still attends school so he is busy at times.", color=0xe06666)
     embedVar.add_field(name="Donations", value="https://www.paypal.com/donate?business=43KUXHDXR5L5L&currency_code=USD", inline=False)
     return embedVar
     
